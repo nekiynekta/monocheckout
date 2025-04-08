@@ -7,19 +7,21 @@
     <title>Jamstack Explorers - Up and Running with Serverless Functions</title>
   </head>
   <body>
-    <h1>My new funnction built on top</h1>
+    <h1>Testing monobank feature</h1>
     <button id="fetch-btn">Fetch</button>
     <p id="response-output">Response Placeholder</p>
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        const fetchBtn = document.getElementById('fetch-btn')
-        const responseText = document.getElementById('response-output')
+        const fetchBtn = document.getElementById('fetch-btn');
+        const responseText = document.getElementById('response-output');
 
-        fetchBtn.addEventListener('click', () => {
-          responseText.innerText = 'Static Text Replacement'
-        })
-      })
+        fetchBtn.addEventListener('click', async () => {
+          const res = await fetch('/.netlify/functions/checkout');
+          const data = await res.json();
+          responseText.innerText = JSON.stringify(data.response || data, null, 2);
+        });
+      });
     </script>
   </body>
 </html>
