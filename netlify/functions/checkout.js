@@ -4,7 +4,7 @@ export async function handler(event, context) {
       return {
         statusCode: 200,
         headers: {
-          "Access-Control-Allow-Origin": "*", // або вкажи твій Webflow домен
+          "Access-Control-Allow-Origin": "*", // або конкретний домен Webflow
           "Access-Control-Allow-Headers": "Content-Type",
           "Access-Control-Allow-Methods": "POST, OPTIONS"
         },
@@ -16,6 +16,7 @@ export async function handler(event, context) {
       const { cart, phone, total } = JSON.parse(event.body);
   
       if (!cart || cart.length === 0) {
+        console.warn('⚠️ Порожній кошик отримано!');
         return {
           statusCode: 400,
           headers: {
@@ -50,16 +51,20 @@ export async function handler(event, context) {
         destination: `Оплата за замовлення від ${phone}`
       };
   
+      console.log('📦 Дані для Monobank:', JSON.stringify(data, null, 2)); // 🧾 лог запиту
+  
       const response = await fetch("https://api.monobank.ua/personal/checkout/order", {
         method: "POST",
         headers: {
-          "X-Token": "mplCAqWmZm8pWW4KaPmBhqg",
+          "X-Token": "mplCAqWmZm8pWW4KaPmBhqg", // заміни на свій валідний токен
           "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
       });
   
       const resJson = await response.json();
+  
+      console.log('📬 Відповідь Monobank:', JSON.stringify(resJson, null, 2)); // 🧾 лог відповіді
   
       return {
         statusCode: 200,
@@ -72,7 +77,9 @@ export async function handler(event, context) {
           monobank_response: resJson
         })
       };
+  
     } catch (error) {
+      console.error('❌ Помилка в функції checkout:', error); // 🔥 лог помилки
       return {
         statusCode: 500,
         headers: {
@@ -81,7 +88,8 @@ export async function handler(event, context) {
         body: JSON.stringify({ error: error.message })
       };
     }
-  }
+}
+  
   
 
 
