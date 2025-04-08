@@ -25,8 +25,8 @@ export async function handler(event, context) {
         uktzed: "49019900",
         tax: [] // можна додати податки, якщо потрібно
       })),
-      dlv_method_list: ["np_box"], // спосіб доставки (можна змінити)
-      payment_method_list: ["card"], // спосіб оплати
+      dlv_method_list: ["np_box", "np_brnm"], // спосіб доставки (можна змінити)
+      payment_method_list: ["card", "payment_on_delivery"], // спосіб оплати
       dlv_pay_merchant: false,
       payments_number: 1,
       callback_url: "https://your-site.com/api/mono-callback", // замініть на свій callback URL
