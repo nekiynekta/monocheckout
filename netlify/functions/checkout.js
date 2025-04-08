@@ -30,7 +30,7 @@ export async function handler(event, context) {
       const response = await fetch("https://api.monobank.ua/personal/checkout/order", {
         method: "POST",
         headers: {
-          "X-Token": "🔒ТВОЙ_ТОКЕН", // заміни на свій
+          "X-Token": "mplCAqWmZm8pWW4KaPmBhqg", // заміни на свій
           "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
