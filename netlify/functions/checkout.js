@@ -1,6 +1,6 @@
 export async function handler(event, context) {
-    // Отримуємо дані з тіла запиту (Cart, name, phone, email, total)
-    const { cart, name, phone, email, total } = JSON.parse(event.body);
+    // Отримуємо дані з тіла запиту (Cart, phone, total)
+    const { cart, phone, total } = JSON.parse(event.body);
   
     // Перевірка, чи є кошик
     if (!cart || cart.length === 0) {
@@ -12,20 +12,20 @@ export async function handler(event, context) {
   
     // Формуємо дані для Monobank API
     const data = {
-      order_ref: `ZAM${phone}`,
+      order_ref: `ZAM${phone}`,  // Замовлення за номером телефону
       amount: total * 100, // сума замовлення у копійках
       ccy: 980, // валюта (грн)
       count: cart.length,
       products: cart.map(item => ({
         name: item.name,
         cnt: 1,
-        price: item.price * 100, // ціна у копійках
-        code_product: item.id,
+        price: item.price, // ціна у копійках
+        code_product: item.id,  // Використовуємо id товару для code_product
         code_checkbox: "CHECK123",
         uktzed: "49019900",
         tax: [] // можна додати податки, якщо потрібно
       })),
-      dlv_method_list: ["np_brnm", "np_box"], // спосіб доставки (можна змінити)
+      dlv_method_list: ["np_brnm", "np_box"], // спосіб доставки
       payment_method_list: ["card", "payment_on_delivery"], // спосіб оплати
       dlv_pay_merchant: false,
       payments_number: 1,
@@ -33,7 +33,7 @@ export async function handler(event, context) {
       return_url: "https://your-site.com/thank-you", // замініть на свою сторінку подяки
       fl_recall: false,
       hold: false,
-      destination: `Оплата за замовлення від ${name}`
+      destination: `Оплата за замовлення`
     };
   
     try {
@@ -48,7 +48,7 @@ export async function handler(event, context) {
   
       const resJson = await response.json();
   
-      // Додаємо вивід у консоль для логів на Netlify
+      // Виводимо результат у консоль для тестування
       console.log("Відповідь Monobank:", resJson);
   
       return {
@@ -66,7 +66,8 @@ export async function handler(event, context) {
         body: JSON.stringify({ error: error.message })
       };
     }
-  }  
+  }
+  
 
 
 //   "X-Token": "mplCAqWmZm8pWW4KaPmBhqg", // заміни на свій
