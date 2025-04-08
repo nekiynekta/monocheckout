@@ -73,7 +73,7 @@ export async function handler(event, context) {
         },
         body: JSON.stringify({
           success: true,
-          redirect_url: resJson.pageUrl || null,
+          redirect_url: resJson.result?.redirect_url || null,
           monobank_response: resJson
         })
       };
