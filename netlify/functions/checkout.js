@@ -28,7 +28,7 @@ export async function handler(event, context) {
   
       const data = {
         order_ref: `ZAM${phone}`,
-        amount: total * 100,
+        amount: total,
         ccy: 980,
         count: cart.length,
         products: cart.map(item => ({
