@@ -34,7 +34,7 @@ export async function handler(event, context) {
         products: cart.map(item => ({
           name: item.name,
           cnt: 1,
-          price: item.price * 100,
+          price: item.price,
           code_product: item.id,
           code_checkbox: "CHECK123",
           uktzed: "49019900",
