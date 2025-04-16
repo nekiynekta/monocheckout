@@ -29,13 +29,13 @@ export async function handler(event, context) {
 // Безпечна обробка cart
 const safeCart = cart.map(item => ({
   name: item.name,
-  price: item.price * 100,
+  price: item.price,
   cnt: Math.max(1, parseInt(item.cnt) || 1)
 }));
 
 const data = {
   order_ref: `ZAM${phone}`,
-  amount: total * 100,
+  amount: total,
   ccy: 980,
   count: safeCart.reduce((sum, item) => sum + item.cnt, 0), // ✅ ПРАВИЛЬНО
   products: safeCart,
