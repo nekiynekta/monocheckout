@@ -35,6 +35,9 @@ export async function handler(event, context) {
           name: item.name,
           cnt: item.cnt,
           price: item.price,
+          code_checkbox: "CHECK123",
+          uktzed: "49019900",
+          tax: []
         })),
         dlv_method_list: ["np_brnm", "np_box"],
         payment_method_list: ["card", "payment_on_delivery"],
