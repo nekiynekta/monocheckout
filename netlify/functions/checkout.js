@@ -33,7 +33,7 @@ export async function handler(event, context) {
         count: cart.length,
         products: cart.map(item => ({
           name: item.name,
-          cnt: item.cnt,
+          cnt: 1,
           price: item.price,
           code_product: item.id,
           code_checkbox: "CHECK123",
