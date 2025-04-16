@@ -26,29 +26,30 @@ export async function handler(event, context) {
         };
       }
   
-      const data = {
-        order_ref: `ZAM${phone}`,
-        amount: total,
-        ccy: 980,
-        count: cart.length,
-        products: cart.map(item => ({
-          name: item.name,
-          cnt: item.cnt,
-          price: item.price,
-          code_checkbox: "CHECK123",
-          uktzed: "49019900",
-          tax: []
-        })),
-        dlv_method_list: ["np_brnm", "np_box"],
-        payment_method_list: ["card", "payment_on_delivery"],
-        dlv_pay_merchant: false,
-        payments_number: 1,
-        callback_url: "https://your-site.com/api/mono-callback",
-        return_url: "https://your-site.com/thank-you",
-        fl_recall: false,
-        hold: false,
-        destination: `Оплата за замовлення від ${phone}`
-      };
+// Безпечна обробка cart
+const safeCart = cart.map(item => ({
+  name: item.name,
+  price: item.price * 100,
+  cnt: Math.max(1, parseInt(item.cnt) || 1)
+}));
+
+const data = {
+  order_ref: `ZAM${phone}`,
+  amount: total * 100,
+  ccy: 980,
+  count: safeCart.reduce((sum, item) => sum + item.cnt, 0), // ✅ ПРАВИЛЬНО
+  products: safeCart,
+  dlv_method_list: ["np_brnm", "np_box"],
+  payment_method_list: ["card", "payment_on_delivery"],
+  dlv_pay_merchant: false,
+  payments_number: 1,
+  callback_url: "https://your-site.com/api/mono-callback",
+  return_url: "https://your-site.com/thank-you",
+  fl_recall: false,
+  hold: false,
+  destination: `Оплата за замовлення від ${phone}`
+};
+
   
       console.log('📦 Дані для Monobank:', JSON.stringify(data, null, 2)); // 🧾 лог запиту
   
