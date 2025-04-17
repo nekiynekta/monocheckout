@@ -34,10 +34,10 @@ const safeCart = cart.map(item => ({
 }));
 
 const data = {
-  order_ref: `ZAM${order_ref}`,
+  order_ref: `ZAM-${order_ref}`,
   amount: total,
   ccy: 980,
-  count: safeCart.reduce((sum, item) => sum + item.cnt, 0), // ✅ ПРАВИЛЬНО
+  count: safeCart.reduce((sum, item) => sum + item.cnt, 0),
   products: safeCart,
   dlv_method_list: ["np_brnm", "np_box"],
   payment_method_list: ["card", "payment_on_delivery"],
