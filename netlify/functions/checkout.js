@@ -13,7 +13,7 @@ export async function handler(event, context) {
     }
   
     try {
-      const { cart, phone, total } = JSON.parse(event.body);
+      const { cart, order_ref, total } = JSON.parse(event.body);
   
       if (!cart || cart.length === 0) {
         console.warn('⚠️ Порожній кошик отримано!');
@@ -34,7 +34,7 @@ const safeCart = cart.map(item => ({
 }));
 
 const data = {
-  order_ref: `ZAM${phone}`,
+  order_ref: `ZAM${order_ref}`,
   amount: total,
   ccy: 980,
   count: safeCart.reduce((sum, item) => sum + item.cnt, 0), // ✅ ПРАВИЛЬНО
@@ -47,7 +47,7 @@ const data = {
   return_url: "https://your-site.com/thank-you",
   fl_recall: false,
   hold: false,
-  destination: `Оплата за замовлення від ${phone}`
+  destination: `Оплата за замовлення ${order_ref}`
 };
 
   
