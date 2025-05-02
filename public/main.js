@@ -1,45 +1,4 @@
-
-// 🔐 Генерація унікального WHO-XXXX
-function generateUniqueOrderRef(prefix = 'WHO', length = 4) {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  const used = JSON.parse(localStorage.getItem('used_order_refs')) || {};
-  let newCode;
-
-  do {
-    let suffix = '';
-    for (let i = 0; i < length; i++) {
-      suffix += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    newCode = `${prefix}-${suffix}`;
-  } while (used[newCode]);
-
-  used[newCode] = true;
-  localStorage.setItem('used_order_refs', JSON.stringify(used));
-
-  return newCode;
-}
-
-// 🟩 Оновлення/підстановка order_ref
-function updateOrderRef() {
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const input = document.getElementById('order_ref');
-
-  if (!input) return;
-
-  if (cart.length >= 1) {
-    let orderRef = localStorage.getItem('order_ref');
-    if (!orderRef) {
-      orderRef = generateUniqueOrderRef(); // WHO-XXXX
-      localStorage.setItem('order_ref', orderRef);
-    }
-    input.value = orderRef;
-  } else {
-    input.value = '';
-    localStorage.removeItem('order_ref');
-  }
-}
-
-// ➕ Додати товар у кошик
+// Додати товар у кошик
 function addToCart(button) {
   const product = button.closest('.product');
   const name = product.dataset.name;
@@ -62,7 +21,7 @@ function addToCart(button) {
   document.querySelector('.cart').style.display = 'flex';
 }
 
-// 🧾 Відображення кошика
+// Відобразити товари у кошику
 function renderCart() {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
   const container = document.getElementById('cart-container');
@@ -109,22 +68,22 @@ function renderCart() {
     container.innerHTML += `<button onclick="clearCart()">Очистити кошик</button>`;
     if (cartBottom) cartBottom.style.display = 'flex';
   }
-
+  //ОНОВЛЮЄМО ЗАГАЛЬНУ СУМУ
   const checkoutPriceEl = document.querySelector('.checkout-cost');
   if (checkoutPriceEl) {
     checkoutPriceEl.textContent = `${total}`;
   }
-
+  
+  //ОНОВЛЮЄМО ВСІ .cart-quantity (загальна кількість одиниць книг)
   const totalItems = cart.reduce((sum, item) => sum + item.cnt, 0);
   document.querySelectorAll('.cart-quantity').forEach(el => {
     el.textContent = totalItems;
   });
-
-  updateOrderRef(); // ✅ оновлення коду замовлення
+	updateOrderRef(); // оновлення коду замовлення
   addCartEventListeners();
 }
 
-// 🔄 Зміна кількості
+// Зміна кількості
 function updateItemQuantity(index, delta) {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
   const item = cart[index];
@@ -135,7 +94,7 @@ function updateItemQuantity(index, delta) {
   renderCart();
 }
 
-// ❌ Видалити товар
+// Видалити товар
 function removeFromCart(index) {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
   cart.splice(index, 1);
@@ -143,14 +102,14 @@ function removeFromCart(index) {
   renderCart();
 }
 
-// 🧹 Очистити кошик
+// Очистити
 function clearCart() {
   localStorage.removeItem('cart');
   localStorage.removeItem('order_ref');
   renderCart();
 }
 
-// 🔁 Події кнопок
+// Події кнопок
 function addCartEventListeners() {
   document.querySelectorAll('.increase-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -168,13 +127,55 @@ function addCartEventListeners() {
 
   document.querySelectorAll('.remove-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const index = btn.closest('[data-index]').dataset.index;
-      removeFromCart(Number(index));
+      const index = btn.closest('.cart-product-item')?.querySelector('[data-index]')?.dataset.index;
+      if (index !== undefined) {
+        removeFromCart(Number(index));
+      }
     });
   });
 }
 
-// 🚀 Оформити замовлення
+// 🔐 Генерація унікального WHO-XXXX
+function generateUniqueOrderRef(prefix = 'WHO', length = 4) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const used = JSON.parse(localStorage.getItem('used_order_refs')) || {};
+  let newCode;
+
+  do {
+    let suffix = '';
+    for (let i = 0; i < length; i++) {
+      suffix += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    newCode = `${prefix}-${suffix}`;
+  } while (used[newCode]);
+
+  used[newCode] = true;
+  localStorage.setItem('used_order_refs', JSON.stringify(used));
+
+  return newCode;
+}
+
+// 🟩 Оновлення/підстановка order_ref
+function updateOrderRef() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const input = document.getElementById('order_ref');
+
+  if (!input) return;
+
+  if (cart.length >= 1) {
+    let orderRef = localStorage.getItem('order_ref');
+    if (!orderRef) {
+      orderRef = generateUniqueOrderRef(); // WHO-XXXX
+      localStorage.setItem('order_ref', orderRef);
+    }
+    input.value = orderRef;
+  } else {
+    input.value = '';
+    localStorage.removeItem('order_ref');
+  }
+}
+
+// Оформити замовлення (відправити у Netlify → Monobank API)
 function submitOrder() {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
   const order_ref = document.getElementById('order_ref')?.value?.trim();
@@ -213,8 +214,7 @@ function submitOrder() {
   });
 }
 
-// 🧠 При завантаженні
+// Автоматичний запуск
 window.onload = () => {
   renderCart();
 };
-

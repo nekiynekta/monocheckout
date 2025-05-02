@@ -1,0 +1,60 @@
+export async function handler(event, context) {
+  console.log("✅ CALLBACK TRIGGERED");
+
+  try {
+    if (event.httpMethod !== "POST") {
+      return {
+        statusCode: 405,
+        body: "Method Not Allowed"
+      };
+    }
+
+    // Лог тіла запиту
+    console.log("BODY:", event.body);
+
+    const { result } = JSON.parse(event.body);
+
+    if (!result || !result.mainClientInfo?.email) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Missing result or email" })
+      };
+    }
+
+    // Генеруємо HTML
+    const productsHtml = result.products.map(p =>
+      `<li>${p.name} — ${p.cnt} шт. — ${p.price} грн</li>`
+    ).join('');
+
+    const html = `
+      <h2>Дякуємо за замовлення №${result.orderId}</h2>
+      <p><strong>Клієнт:</strong> ${result.mainClientInfo.first_name} ${result.mainClientInfo.last_name}</p>
+      <p><strong>Дата:</strong> ${result.dateCreate}</p>
+      <p><strong>Спосіб оплати:</strong> ${result.payment_method_desc}</p>
+      <p><strong>Статус:</strong> ${result.payment_status}</p>
+      <h3>Товари:</h3>
+      <ul>${productsHtml}</ul>
+      <p><strong>Сума:</strong> ${result.amount} грн</p>
+      <p><strong>Адреса доставки:</strong><br>${result.delivery_branch_address}<br>${result.deliveryAddressInfo.cityName}, ${result.deliveryAddressInfo.areaName}</p>
+      <hr/>
+      <p style="font-size: 12px; color: #888;">Цей лист згенеровано автоматично.</p>
+    `;
+
+    // Симуляція відправки
+    console.log("📬 Симуляція надсилання email");
+    console.log("To:", result.mainClientInfo.email);
+    console.log("HTML preview:", html.slice(0, 250) + "...");
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: "Simulated email sent successfully" })
+    };
+
+  } catch (err) {
+    console.error("❌ Помилка:", err.message);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: err.message })
+    };
+  }
+}
