@@ -19,6 +19,17 @@ export async function handler(event, context) {
       };
     }
 
+    const brevoApiKey = process.env.BREVO_API_KEY;
+    const brevoSenderEmail = "ndrew.frolov@gmail.com"; // 🔁 заміни на свій верифікований email у Brevo
+
+    if (!brevoApiKey) {
+      console.warn("❗ BREVO_API_KEY is missing in environment variables");
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: "Email service not configured (missing API key)" })
+      };
+    }
+
     const productsHtml = result.products.map(p =>
       `<li>${p.name} — ${p.cnt} шт. — ${p.price} грн</li>`
     ).join('');
@@ -36,9 +47,6 @@ export async function handler(event, context) {
       <hr/>
       <p style="font-size: 12px; color: #888;">Цей лист згенеровано автоматично.</p>
     `;
-
-    const brevoApiKey = process.env.BREVO_API_KEY;
-    const brevoSenderEmail = "noreply@yourdomain.com"; // 🔁 заміни на свій верифікований email у Brevo
 
     const response = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
@@ -75,7 +83,10 @@ export async function handler(event, context) {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: "Email sent successfully", resJson })
+      body: JSON.stringify({
+        message: "Email sent successfully",
+        messageId: resJson.messageId || null
+      })
     };
 
   } catch (error) {
