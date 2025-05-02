@@ -9,10 +9,8 @@ export async function handler(event, context) {
       };
     }
 
-    // Лог тіла запиту
-    console.log("BODY:", event.body);
-
     const { result } = JSON.parse(event.body);
+    console.log("➡️ Отримано результат:", result);
 
     if (!result || !result.mainClientInfo?.email) {
       return {
@@ -21,7 +19,6 @@ export async function handler(event, context) {
       };
     }
 
-    // Генеруємо HTML
     const productsHtml = result.products.map(p =>
       `<li>${p.name} — ${p.cnt} шт. — ${p.price} грн</li>`
     ).join('');
@@ -40,21 +37,52 @@ export async function handler(event, context) {
       <p style="font-size: 12px; color: #888;">Цей лист згенеровано автоматично.</p>
     `;
 
-    // Симуляція відправки
-    console.log("📬 Симуляція надсилання email");
-    console.log("To:", result.mainClientInfo.email);
-    console.log("HTML preview:", html.slice(0, 250) + "...");
+    const brevoApiKey = process.env.BREVO_API_KEY;
+    const brevoSenderEmail = "noreply@yourdomain.com"; // 🔁 заміни на свій верифікований email у Brevo
+
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "api-key": brevoApiKey,
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        sender: {
+          name: "Bookshop",
+          email: brevoSenderEmail
+        },
+        to: [
+          {
+            email: result.mainClientInfo.email,
+            name: `${result.mainClientInfo.first_name} ${result.mainClientInfo.last_name}`
+          }
+        ],
+        subject: `Ваше замовлення №${result.orderId}`,
+        htmlContent: html
+      })
+    });
+
+    const resJson = await response.json();
+    console.log("📬 Brevo response:", resJson);
+
+    if (!response.ok) {
+      return {
+        statusCode: response.status,
+        body: JSON.stringify({ error: "Failed to send email", details: resJson })
+      };
+    }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: "Simulated email sent successfully" })
+      body: JSON.stringify({ message: "Email sent successfully", resJson })
     };
 
-  } catch (err) {
-    console.error("❌ Помилка:", err.message);
+  } catch (error) {
+    console.error("❌ Error in mono-callback:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: err.message })
+      body: JSON.stringify({ error: error.message || "Unexpected error" })
     };
   }
 }
