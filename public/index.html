@@ -1,39 +1,67 @@
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Jamstack Explorers - Up and Running with Serverless Functions</title>
-    </head>
-    <body>
-      <h1>Testing Webflow + Netlify + Monobank API 6.0</h1>
-      <h2>APP Version 2.0 -- додано бойову-тестову функцію для відправки листа на Брево</h2>
-      <button id="fetch-btn">Fetch</button>
-      <p id="response-output">Response Placeholder</p>
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Test Netlify Function</title>
+</head>
+<body>
+  <h2>APP Version 2.0 -- додано бойову-тестову функцію для відправки листа на Брево</h2>
+  <button onclick="sendTest()">Надіслати тест</button>
 
-      <script>
-        document.addEventListener('DOMContentLoaded', () => {
-          const fetchBtn = document.getElementById('fetch-btn');
-          const responseText = document.getElementById('response-output');
+  <script>
+    async function sendTest() {
+      const data = {
+        result: {
+          orderId: "f2729a74-6dr2-4586-b825-841a546fede2",
+          dateCreate: "22.11.2023 13:35",
+          deliveryRecipientInfo: {
+            first_name: "Василь",
+            last_name: "Коваленко",
+            phoneNumber: "+38099000000"
+          },
+          mainClientInfo: {
+            first_name: "Василина",
+            last_name: "Коваленко",
+            phoneNumber: "+38099000000",
+            email: "ndrew.frolov@gmail.com"
+          },
+          delivery_method_desc: "НП відділення",
+          delivery_branch_address: "Відділення №128 (ТРЦ Gulliver)",
+          amount: 320,
+          payment_method_desc: "Оплата карткою",
+          payment_status: "успішно",
+          paymentDateCreate: "25.09.2023 12:13",
+          deliveryAddressInfo: {
+            cityName: "Миколаїв",
+            areaName: "Миколаївська"
+          },
+          products: [
+            {
+              name: "Футболка сіра OBEY THE CATS — XS",
+              cnt: 1,
+              price: 320
+            }
+          ]
+        }
+      };
 
-          fetchBtn.addEventListener('click', async () => {
-            const testData = {
-              phone: "123456789",
-              total: 100,
-              cart: [{ id: "book-1", name: "Книга", price: 100 }]
-            };
-
-            const res = await fetch('/.netlify/functions/checkout', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(testData)
-            });
-
-            const data = await res.json();
-            responseText.innerText = JSON.stringify(data, null, 2);
-          });
+      try {
+        const response = await fetch("https://your-site.netlify.app/.netlify/functions/mono-callback", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
         });
-      </script>
-    </body>
-  </html>
+
+        const result = await response.json();
+        console.log("✅ Відповідь:", result);
+        alert("Успіх: " + JSON.stringify(result));
+      } catch (error) {
+        console.error("❌ Помилка:", error);
+        alert("Помилка: " + error.message);
+      }
+    }
+  </script>
+</body>
+</html>
