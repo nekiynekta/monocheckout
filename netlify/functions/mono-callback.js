@@ -1,20 +1,28 @@
 export async function handler(event, context) {
+  const headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS"
+  };
+
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers,
+      body: ""
+    };
+  }
+
   console.log("✅ CALLBACK TRIGGERED");
 
   try {
-    if (event.httpMethod !== "POST") {
-      return {
-        statusCode: 405,
-        body: "Method Not Allowed"
-      };
-    }
-
     const { result } = JSON.parse(event.body);
     console.log("➡️ Отримано результат:", result);
 
     if (!result || !result.mainClientInfo?.email) {
       return {
         statusCode: 400,
+        headers,
         body: JSON.stringify({ error: "Missing result or email" })
       };
     }
@@ -26,6 +34,7 @@ export async function handler(event, context) {
       console.warn("❗ BREVO_API_KEY is missing in environment variables");
       return {
         statusCode: 500,
+        headers,
         body: JSON.stringify({ error: "Email service not configured (missing API key)" })
       };
     }
@@ -77,12 +86,14 @@ export async function handler(event, context) {
     if (!response.ok) {
       return {
         statusCode: response.status,
+        headers,
         body: JSON.stringify({ error: "Failed to send email", details: resJson })
       };
     }
 
     return {
       statusCode: 200,
+      headers,
       body: JSON.stringify({
         message: "Email sent successfully",
         messageId: resJson.messageId || null
@@ -93,6 +104,7 @@ export async function handler(event, context) {
     console.error("❌ Error in mono-callback:", error);
     return {
       statusCode: 500,
+      headers,
       body: JSON.stringify({ error: error.message || "Unexpected error" })
     };
   }
