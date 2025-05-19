@@ -66,7 +66,7 @@ export async function handler(event, context) {
       },
       body: JSON.stringify({
         sender: {
-          name: "Bookshop",
+          name: "Hto tse",
           email: brevoSenderEmail
         },
         to: [
