@@ -19,6 +19,8 @@ export async function handler(event, context) {
   try {
     const { result } = JSON.parse(event.body);
     console.log("➡️ Отримано результат:", result);
+    //Додано додаткове логування для чеку на Нетліфай
+    console.log("🧾 Отримано повний result:\n", JSON.stringify(result, null, 2));
 
     if (!result || !result.mainClientInfo?.email) {
       return {
