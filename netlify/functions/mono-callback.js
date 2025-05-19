@@ -28,7 +28,7 @@ export async function handler(event, context) {
     }
 
     const brevoApiKey = process.env.BREVO_API_KEY;
-    const brevoSenderEmail = "ndrew.frolov@gmail.com"; // 🔁 заміни на свій верифікований email у Brevo
+    const brevoSenderEmail = "hello@htotse.com"; // 🔁 заміни на свій верифікований email у Brevo
 
     if (!brevoApiKey) {
       console.warn("❗ BREVO_API_KEY is missing in environment variables");
