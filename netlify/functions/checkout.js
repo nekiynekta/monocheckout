@@ -46,7 +46,7 @@ export async function handler(event, context) {
       dlv_pay_merchant: false,
       payments_number: 1,
       callback_url: "https://your-site.com/api/mono-callback",
-      return_url: "https://your-site.com/thank-you",
+      return_url: "https://htotse-otsedesign.webflow.io/successful-payment",
       fl_recall: true,
       hold: false,
       destination: `Оплата за замовлення ${order_ref}`
@@ -91,9 +91,3 @@ export async function handler(event, context) {
     };
   }
 }
-  
-  
-
-
-//   "X-Token": "mplCAqWmZm8pWW4KaPmBhqg", // заміни на свій
-// "https://api.monobank.ua/personal/checkout/order"
