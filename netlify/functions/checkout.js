@@ -1,93 +1,95 @@
 export async function handler(event, context) {
-    if (event.httpMethod === "OPTIONS") {
-      // Handle preflight request
-      return {
-        statusCode: 200,
-        headers: {
-          "Access-Control-Allow-Origin": "*", // або конкретний домен Webflow
-          "Access-Control-Allow-Headers": "Content-Type",
-          "Access-Control-Allow-Methods": "POST, OPTIONS"
-        },
-        body: ""
-      };
-    }
-  
-    try {
-      const { cart, order_ref, total } = JSON.parse(event.body);
-  
-      if (!cart || cart.length === 0) {
-        console.warn('⚠️ Порожній кошик отримано!');
-        return {
-          statusCode: 400,
-          headers: {
-            "Access-Control-Allow-Origin": "*"
-          },
-          body: JSON.stringify({ error: "Кошик порожній!" })
-        };
-      }
-  
-// Безпечна обробка cart
-const safeCart = cart.map(item => ({
-  name: item.name,
-  price: item.price,
-  cnt: Math.max(1, parseInt(item.cnt) || 1)
-}));
+  const monoApiKey = process.env.MONO_API_KEY;
 
-const data = {
-  order_ref: `ZAM-${order_ref}`,
-  amount: total,
-  ccy: 980,
-  count: safeCart.reduce((sum, item) => sum + item.cnt, 0),
-  products: safeCart,
-  dlv_method_list: ["np_brnm", "np_box"],
-  payment_method_list: ["card"],
-  dlv_pay_merchant: false,
-  payments_number: 1,
-  callback_url: "https://your-site.com/api/mono-callback",
-  return_url: "https://your-site.com/thank-you",
-  fl_recall: true,
-  hold: false,
-  destination: `Оплата за замовлення ${order_ref}`
-};
+  if (event.httpMethod === "OPTIONS") {
+    // Handle preflight request
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*", // або конкретний домен Webflow
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "POST, OPTIONS"
+      },
+      body: ""
+    };
+  }
+  
+  try {
+    const { cart, order_ref, total } = JSON.parse(event.body);
 
-  
-      console.log('📦 Дані для Monobank:', JSON.stringify(data, null, 2)); // 🧾 лог запиту
-  
-      const response = await fetch("https://api.monobank.ua/personal/checkout/order", {
-        method: "POST",
-        headers: {
-          "X-Token": "mplCAqWmZm8pWW4KaPmBhqg", // заміни на свій валідний токен
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      });
-  
-      const resJson = await response.json();
-  
-      console.log('📬 Відповідь Monobank:', JSON.stringify(resJson, null, 2)); // 🧾 лог відповіді
-  
+    if (!cart || cart.length === 0) {
+      console.warn('⚠️ Порожній кошик отримано!');
       return {
-        statusCode: 200,
+        statusCode: 400,
         headers: {
           "Access-Control-Allow-Origin": "*"
         },
-        body: JSON.stringify({
-          success: true,
-          redirect_url: resJson.result?.redirect_url || null,
-          monobank_response: resJson
-        })
-      };
-  
-    } catch (error) {
-      console.error('❌ Помилка в функції checkout:', error); // 🔥 лог помилки
-      return {
-        statusCode: 500,
-        headers: {
-          "Access-Control-Allow-Origin": "*"
-        },
-        body: JSON.stringify({ error: error.message })
+        body: JSON.stringify({ error: "Кошик порожній!" })
       };
     }
+  
+    // Безпечна обробка cart
+    const safeCart = cart.map(item => ({
+      name: item.name,
+      price: item.price,
+      cnt: Math.max(1, parseInt(item.cnt) || 1)
+    }));
+
+    const data = {
+      order_ref: `ZAM-${order_ref}`,
+      amount: total,
+      ccy: 980,
+      count: safeCart.reduce((sum, item) => sum + item.cnt, 0),
+      products: safeCart,
+      dlv_method_list: ["np_brnm", "np_box"],
+      payment_method_list: ["card"],
+      dlv_pay_merchant: false,
+      payments_number: 1,
+      callback_url: "https://your-site.com/api/mono-callback",
+      return_url: "https://your-site.com/thank-you",
+      fl_recall: true,
+      hold: false,
+      destination: `Оплата за замовлення ${order_ref}`
+    };
+
+  
+    console.log('📦 Дані для Monobank:', JSON.stringify(data, null, 2)); // 🧾 лог запиту
+  
+    const response = await fetch("https://api.monobank.ua/personal/checkout/order", {
+      method: "POST",
+      headers: {
+        "X-Token": monoApiKey, // заміни на свій валідний токен
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+  
+    const resJson = await response.json();
+  
+    console.log('📬 Відповідь Monobank:', JSON.stringify(resJson, null, 2)); // 🧾 лог відповіді
+  
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*"
+      },
+      body: JSON.stringify({
+        success: true,
+        redirect_url: resJson.result?.redirect_url || null,
+        monobank_response: resJson
+      })
+    };
+  
+  } catch (error) {
+    console.error('❌ Помилка в функції checkout:', error); // 🔥 лог помилки
+    return {
+      statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*"
+      },
+      body: JSON.stringify({ error: error.message })
+    };
+  }
 }
   
   
