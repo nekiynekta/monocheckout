@@ -45,7 +45,7 @@ export async function handler(event, context) {
       payment_method_list: ["card"],
       dlv_pay_merchant: false,
       payments_number: 1,
-      callback_url: "https://your-site.com/api/mono-callback",
+      callback_url: "https://monocheckout-test.netlify.app/.netlify/functions/mono-callback",
       return_url: "https://htotse-otsedesign.webflow.io/successful-payment",
       fl_recall: true,
       hold: false,
