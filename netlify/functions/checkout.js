@@ -45,7 +45,7 @@ const data = {
   payments_number: 1,
   callback_url: "https://your-site.com/api/mono-callback",
   return_url: "https://your-site.com/thank-you",
-  fl_recall: false,
+  fl_recall: true,
   hold: false,
   destination: `Оплата за замовлення ${order_ref}`
 };
