@@ -40,7 +40,7 @@ const data = {
   count: safeCart.reduce((sum, item) => sum + item.cnt, 0),
   products: safeCart,
   dlv_method_list: ["np_brnm", "np_box"],
-  payment_method_list: ["card", "payment_on_delivery"],
+  payment_method_list: ["card"],
   dlv_pay_merchant: false,
   payments_number: 1,
   callback_url: "https://your-site.com/api/mono-callback",
