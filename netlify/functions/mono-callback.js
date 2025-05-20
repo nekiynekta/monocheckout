@@ -87,7 +87,7 @@ export async function handler(event, context) {
             name: `${result.mainClientInfo.first_name} ${result.mainClientInfo.last_name}`
           }
         ],
-        subject: `Ваше замовлення №${result.orderId}`,
+        subject: `Ваше замовлення №${result.basket_id}`,
         htmlContent: html
       })
     });
