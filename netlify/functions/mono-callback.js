@@ -17,11 +17,20 @@ export async function handler(event, context) {
   console.log("✅ CALLBACK TRIGGERED");
 
   try {
-    const { result } = JSON.parse(event.body);
-    console.log("➡️ Отримано результат:", result);
-    //Додано додаткове логування для чеку на Нетліфай
+    //Було 4.1:
+    // const { result } = JSON.parse(event.body);
+
+    // 4.2) Розбираємо тіло й беремо result незалежно від обгортки
+    const parsedBody = JSON.parse(event.body);
+    const result = parsedBody.result ?? parsedBody;
+
+    // 4.1
+    // console.log("➡️ Отримано результат:", result);  
+
+    // 4.2) Лог всього result, щоб переконатися, що ми його правильно парсимо
     console.log("🧾 Отримано повний result:\n", JSON.stringify(result, null, 2));
 
+    //  Перевіряємо наявність email
     if (!result || !result.mainClientInfo?.email) {
       return {
         statusCode: 400,
