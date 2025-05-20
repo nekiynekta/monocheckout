@@ -56,7 +56,7 @@ export async function handler(event, context) {
     ).join('');
 
     const html = `
-      <h2>Дякуємо за замовлення №${result.orderId}</h2>
+      <h2>Дякуємо за замовлення №${result.basket_id}</h2>
       <p><strong>Клієнт:</strong> ${result.mainClientInfo.first_name} ${result.mainClientInfo.last_name}</p>
       <p><strong>Дата:</strong> ${result.dateCreate}</p>
       <p><strong>Спосіб оплати:</strong> ${result.payment_method_desc}</p>

@@ -5,43 +5,72 @@
   <title>Test Netlify Function</title>
 </head>
 <body>
-  <h2>APP Version 4.3 -- mono-callback працює добре</h2>
-  <button onclick="sendTest()">Надіслати тест</button>
+  <h2>APP Version 5.0 -- видалив main.js, оновлено read.me та замінено order_ref на basket_id у mono-callback</h2>
+  <!-- <button onclick="sendTest()">Надіслати тест</button> -->
 
   <script>
+    //Приклад дати Інформації після успішної оплати для тесту відпраки до mono-callback
     async function sendTest() {
       const data = {
         result: {
-          orderId: "f2729a74-6dr2-4586-b825-841a546fede2",
-          dateCreate: "22.11.2023 13:35",
-          deliveryRecipientInfo: {
-            first_name: "Василь",
-            last_name: "Коваленко",
-            phoneNumber: "+38099000000"
+          "orderId": "9c3def92-fa10-4f4a-932e-d61da4e557ff",
+          "dateCreate": "20.05.2025 00:19",
+          "basket_id": "ZAM-WHO-EQI4",
+          "deliveryRecipientInfo": {
+            "first_name": "Andrii",
+            "last_name": "Frolov",
+            "phoneNumber": "+380661722953"
           },
-          mainClientInfo: {
-            first_name: "Василина",
-            last_name: "Коваленко",
-            phoneNumber: "+38099000000",
-            email: "ndrew.frolov@gmail.com"
+          "mainClientInfo": {
+            "first_name": "Andrii",
+            "last_name": "Frolov",
+            "phoneNumber": "+380661722953",
+            "email": "ndrew.frolov@gmail.com"
           },
-          delivery_method_desc: "НП відділення",
-          delivery_branch_address: "Відділення №128 (ТРЦ Gulliver)",
-          amount: 320,
-          payment_method_desc: "Оплата карткою",
-          payment_status: "успішно",
-          paymentDateCreate: "25.09.2023 12:13",
-          deliveryAddressInfo: {
-            cityName: "Миколаїв",
-            areaName: "Миколаївська"
-          },
-          products: [
+          "delivery_method": "np_brnm",
+          "delivery_method_desc": "\"Нова пошта\" відділення",
+          "delivery_branch_id": "7b422fbe-e1b8-11e3-8c4a-0050568002cf",
+          "delivery_branch_address": "Вантажне відділення №2: Київ, Богатирська, 11",
+          "delivery_pay_merchant": false,
+          "amount": 1,
+          "ccy": 980,
+          "quantity": 1,
+          "order_state": 11,
+          "products": [
             {
-              name: "Футболка сіра OBEY THE CATS — XS",
-              cnt: 1,
-              price: 320
+              "name": "Оверсинкінг. Як побороти тривогу та почати жити тут і зараз",
+              "cnt": 1,
+              "price": 1
             }
-          ]
+          ],
+          "payment_method": "card",
+          "payment_method_desc": "Оплата карткою",
+          "payment_status": "success",
+          "paymentDateCreate": "20.05.2025 00:19",
+          "generalStatus": "success",
+          "paymentInfo": {
+            "rrn": "069095642017",
+            "approvalCode": "270383",
+            "tranId": "18256740872",
+            "terminal": "MI022698",
+            "bank": "Універсал Банк",
+            "paymentSystem": "visa",
+            "country": "804",
+            "fee": 1,
+            "paymentMethod": "monobank",
+            "maskedPan": "44411144******58"
+          },
+          "invoiceId": "250519AoiZXxaLBNCdUB",
+          "delivery_city_id": "8d5a980d-391c-11dd-90d9-001a92567626",
+          "deliveryAddressInfo": {
+            "cityName": "Київ",
+            "cityRef": "8d5a980d-391c-11dd-90d9-001a92567626",
+            "cityType": "місто",
+            "areaName": "Київська",
+            "areaRef": "71508131-9b87-11de-822f-000c2965ae0e"
+          },
+          "comment": "",
+          "destination": "Оплата за замовлення WHO-EQI4"
         }
       };
 
