@@ -57,9 +57,9 @@ export async function handler(event, context) {
 
     const html = `
       <img
-        src="/assets/htotse-logo.png"
+        src="https://monocheckout-test.netlify.app/assets/htotse-logo.png"
         alt="Hto tse logo"
-        style="width:300px; display:block;"
+        style="width:100px; display:block;"
       />
       <h2>Привіт!</h2>
       <h3>Класний вибір! Твій номер замовлення #${result.basket_id}</h3>
