@@ -56,10 +56,15 @@ export async function handler(event, context) {
     ).join('');
 
     const html = `
+      <img
+        src="/assets/htotse-logo.png"
+        alt="Hto tse logo"
+        style="width:300px; display:block;"
+      />
       <h2>Привіт!</h2>
-      <h2>Класний вибір! Твій номер замовлення #${result.basket_id}</h2>
+      <h3>Класний вибір! Твій номер замовлення #${result.basket_id}</h3>
       <p><strong>Отримувач:</strong> ${result.mainClientInfo.first_name} ${result.mainClientInfo.last_name}</p>
-      <p><strong>Дата:</strong> ${result.dateCreate}</p>
+      <p><strong>Дата і час:</strong> ${result.dateCreate}</p>
       <p><strong>Спосіб оплати:</strong> ${result.payment_method_desc}</p>
       <p><strong>Статус оплати:</strong> ${result.payment_status}</p>
       <h3>Товари:</h3>
