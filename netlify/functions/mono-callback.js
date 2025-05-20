@@ -56,17 +56,35 @@ export async function handler(event, context) {
     ).join('');
 
     const html = `
-      <h2>Дякуємо за замовлення №${result.basket_id}</h2>
-      <p><strong>Клієнт:</strong> ${result.mainClientInfo.first_name} ${result.mainClientInfo.last_name}</p>
+      <h2>Привіт!</h2>
+      <h2>Класний вибір! Твій номер замовлення #${result.basket_id}</h2>
+      <p><strong>Отримувач:</strong> ${result.mainClientInfo.first_name} ${result.mainClientInfo.last_name}</p>
       <p><strong>Дата:</strong> ${result.dateCreate}</p>
       <p><strong>Спосіб оплати:</strong> ${result.payment_method_desc}</p>
-      <p><strong>Статус:</strong> ${result.payment_status}</p>
+      <p><strong>Статус оплати:</strong> ${result.payment_status}</p>
       <h3>Товари:</h3>
       <ul>${productsHtml}</ul>
       <p><strong>Сума:</strong> ${result.amount} грн</p>
-      <p><strong>Адреса доставки:</strong><br>${result.delivery_branch_address}<br>${result.deliveryAddressInfo.cityName}, ${result.deliveryAddressInfo.areaName}</p>
+      <p><strong>Спосіб та адреса доставки:</strong><br>${result.delivery_branch_address}<br>${result.deliveryAddressInfo.cityName}, ${result.deliveryAddressInfo.areaName}</p>
       <hr/>
-      <p style="font-size: 12px; color: #888;">Цей лист згенеровано автоматично.</p>
+      <p>
+        Якщо з замовленням все гаразд — відправимо його протягом 3 робочих днів. 
+        Очікуй сповіщення від компанії-перевізника. 
+        Якщо в нас виникнуть питання, ми зателефонуємо для уточнень.
+      </p>
+      <p>Передзамовлення відправимо щойно книга вийде з друку (орієнтовна дата вказана на сторінці книги). Ми дуже вдячні за таку підтримку і готовність зачекати.</p>
+      <p>
+        Якщо залишилися питання — напиши нам на пошту 
+        <a href="mailto:hello@htotse.com" style="color:#1a73e8; text-decoration:none;">
+          hello@htotse.com
+        </a>
+        або в директ в 
+        <a href="https://www.instagram.com/podyvymos_htotse" 
+          target="_blank" 
+          style="color:#1a73e8; text-decoration:none;">
+          Інстаграм
+        </a>.
+      </p>
     `;
 
     const response = await fetch("https://api.brevo.com/v3/smtp/email", {
@@ -78,7 +96,7 @@ export async function handler(event, context) {
       },
       body: JSON.stringify({
         sender: {
-          name: "Hto tse",
+          name: "Хто це?",
           email: brevoSenderEmail
         },
         to: [
@@ -87,7 +105,7 @@ export async function handler(event, context) {
             name: `${result.mainClientInfo.first_name} ${result.mainClientInfo.last_name}`
           }
         ],
-        subject: `Ваше замовлення №${result.basket_id}`,
+        subject: `Хто це замовив нові книжки? Твоє замовлення #${result.basket_id}`,
         htmlContent: html
       })
     });
