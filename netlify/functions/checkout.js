@@ -46,7 +46,7 @@ export async function handler(event, context) {
       dlv_pay_merchant: false,
       payments_number: 1,
       callback_url: "https://webhook.site/a8e16df5-fff9-43d0-8485-051d854a47bd",
-      return_url: "https://htotse-otsedesign.webflow.io/successful-payment",
+      return_url: "https://www.htotse.com/successful-payment",
       fl_recall: true,
       hold: false,
       destination: `Оплата за замовлення ${order_ref}`
