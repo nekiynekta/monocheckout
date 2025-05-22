@@ -87,8 +87,7 @@ export async function handler(event, context) {
         <a href="https://www.instagram.com/podyvymos_htotse" 
           target="_blank" 
           style="color:#1a73e8; text-decoration:none;">
-          Інстаграм
-        </a>.
+          Інстаграм</a>.
       </p>
     `;
 
