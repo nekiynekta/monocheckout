@@ -36,7 +36,7 @@ export async function handler(event, context) {
     }));
 
     const data = {
-      order_ref: `ZAM-${order_ref}`,
+      order_ref: `${order_ref}`,
       amount: total,
       ccy: 980,
       count: safeCart.reduce((sum, item) => sum + item.cnt, 0),
@@ -45,7 +45,7 @@ export async function handler(event, context) {
       payment_method_list: ["card"],
       dlv_pay_merchant: false,
       payments_number: 1,
-      callback_url: "https://webhook.site/a8e16df5-fff9-43d0-8485-051d854a47bd",
+      //callback_url: "",
       return_url: "https://www.htotse.com/successful-payment",
       fl_recall: true,
       hold: false,
@@ -91,3 +91,6 @@ export async function handler(event, context) {
     };
   }
 }
+
+
+//      callback_url: "https://webhook.site/a8e16df5-fff9-43d0-8485-051d854a47bd", - callback_url
