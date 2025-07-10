@@ -5,7 +5,7 @@
   <title>Test Netlify Function</title>
 </head>
 <body>
-  <h2>APP Version 8.0 -- тест make.com</h2>
+  <h2>APP Version 8.0.1 -- тест make.com</h2>
   <button onclick="sendTest()">Надіслати тест</button>
 
   <script>
@@ -83,7 +83,7 @@
           body: JSON.stringify(data)
         });
 
-        const result = await response.json();
+        const result = await response.text();
         console.log("✅ Відповідь:", result);
         alert("Успіх: " + JSON.stringify(result));
       } catch (error) {
