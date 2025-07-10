@@ -117,6 +117,20 @@ export async function handler(event, context) {
     const resJson = await response.json();
     console.log("📬 Brevo response:", resJson);
 
+    // Send to Make Webhook
+    try {
+      await fetch("https://hook.eu2.make.com/kg3nxgp752fmmuymayempe8tk4jv454r", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ result })
+      });
+      console.log("✅ Дані відправлено у Make Webhook");
+    } catch (makeErr) {
+      console.error("❌ Помилка при відправці у Make Webhook:", makeErr);
+    }
+
     if (!response.ok) {
       return {
         statusCode: response.status,
