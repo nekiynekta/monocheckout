@@ -6,7 +6,7 @@ export async function handler(event, context) {
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*", // або конкретний домен Webflow
+        "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Allow-Methods": "POST, OPTIONS"
       },
@@ -18,17 +18,17 @@ export async function handler(event, context) {
     const { cart, order_ref, total } = JSON.parse(event.body);
 
     if (!cart || cart.length === 0) {
-      console.warn('⚠️ Порожній кошик отримано!');
+      console.warn('Empty cart received!');
       return {
         statusCode: 400,
         headers: {
           "Access-Control-Allow-Origin": "*"
         },
-        body: JSON.stringify({ error: "Кошик порожній!" })
+        body: JSON.stringify({ error: "Cart is empty!" })
       };
     }
   
-    // Безпечна обробка cart
+    // Safe cart processing
     const safeCart = cart.map(item => ({
       name: item.name,
       price: item.price,
@@ -53,12 +53,12 @@ export async function handler(event, context) {
     };
 
   
-    console.log('📦 Дані для Monobank:', JSON.stringify(data, null, 2)); // 🧾 лог запиту
+    console.log('Data for Monobank:', JSON.stringify(data, null, 2)); // Request log
   
     const response = await fetch("https://api.monobank.ua/personal/checkout/order", {
       method: "POST",
       headers: {
-        "X-Token": monoApiKey, // заміни на свій валідний токен
+        "X-Token": monoApiKey, // replace with your valid token
         "Content-Type": "application/json"
       },
       body: JSON.stringify(data)
@@ -66,7 +66,7 @@ export async function handler(event, context) {
   
     const resJson = await response.json();
   
-    console.log('📬 Відповідь Monobank:', JSON.stringify(resJson, null, 2)); // 🧾 лог відповіді
+    console.log('Monobank response:', JSON.stringify(resJson, null, 2)); // Response log
   
     return {
       statusCode: 200,
@@ -81,7 +81,7 @@ export async function handler(event, context) {
     };
   
   } catch (error) {
-    console.error('❌ Помилка в функції checkout:', error); // 🔥 лог помилки
+    console.error('Error in checkout function:', error); // Error log
     return {
       statusCode: 500,
       headers: {

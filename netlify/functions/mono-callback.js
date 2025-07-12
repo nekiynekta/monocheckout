@@ -1,4 +1,5 @@
-export async function handler(event, context) {
+// context тут не використовується, тому можна його видалити:
+export async function handler(event) {
   const headers = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type",
@@ -17,20 +18,14 @@ export async function handler(event, context) {
   console.log("✅ CALLBACK TRIGGERED");
 
   try {
-    //Було 4.1:
-    // const { result } = JSON.parse(event.body);
-
-    // 4.2) Розбираємо тіло й беремо result незалежно від обгортки
+    // Parse the body and get result regardless of wrapper
     const parsedBody = JSON.parse(event.body);
     const result = parsedBody.result ?? parsedBody;
 
-    // 4.1
-    // console.log("➡️ Отримано результат:", result);  
-
-    // 4.2) Лог всього result, щоб переконатися, що ми його правильно парсимо
+    // Log the entire result to make sure we parse it correctly
     console.log("🧾 Отримано повний result:\n", JSON.stringify(result, null, 2));
 
-    //  Перевіряємо наявність email
+    // Check for presence of email
     if (!result || !result.mainClientInfo?.email) {
       return {
         statusCode: 400,
@@ -40,7 +35,7 @@ export async function handler(event, context) {
     }
 
     const brevoApiKey = process.env.BREVO_API_KEY;
-    const brevoSenderEmail = "hello@htotse.com"; // 🔁 заміни на свій верифікований email у Brevo
+    const brevoSenderEmail = "hello@htotse.com";
 
     if (!brevoApiKey) {
       console.warn("❗ BREVO_API_KEY is missing in environment variables");
