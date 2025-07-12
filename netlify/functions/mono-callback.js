@@ -1,4 +1,3 @@
-// context тут не використовується, тому можна його видалити:
 export async function handler(event) {
   const headers = {
     "Access-Control-Allow-Origin": "*",
