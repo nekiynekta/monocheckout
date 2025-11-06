@@ -21,15 +21,48 @@ export async function handler(event) {
     const parsedBody = JSON.parse(event.body);
     const result = parsedBody.result ?? parsedBody;
 
-    // Log the entire result to make sure we parse it correctly
-    console.log("🧾 Отримано повний result:\n", JSON.stringify(result, null, 2));
+    const forwardToMake = async () => {
+      try {
+        await fetch("https://hook.eu2.make.com/kg3nxgp752fmmuymayempe8tk4jv454r", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ result })
+        });
+        console.log("✅ Дані відправлено у Make Webhook");
+      } catch (makeErr) {
+        console.error("❌ Помилка при відправці у Make Webhook:", makeErr);
+      }
+    };
 
-    // Check for presence of email
-    if (!result || !result.mainClientInfo?.email) {
+    if (!result) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: "Missing result or email" })
+        body: JSON.stringify({ error: "Missing result" })
+      };
+    }
+
+    // Log the entire result to make sure we parse it correctly
+    console.log("🧾 Отримано повний result:\n", JSON.stringify(result, null, 2));
+
+    if (result?.payment_status?.toLowerCase() !== "success") {
+      console.log("⏭️ Пропускаємо емейл: payment_status =", result?.payment_status);
+      await forwardToMake();
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ message: "Payment not successful, email skipped" })
+      };
+    }
+
+    // Check for presence of email
+    if (!result.mainClientInfo?.email) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: "Missing email" })
       };
     }
 
@@ -111,19 +144,7 @@ export async function handler(event) {
     const resJson = await response.json();
     console.log("📬 Brevo response:", resJson);
 
-    // Send to Make Webhook
-    try {
-      await fetch("https://hook.eu2.make.com/kg3nxgp752fmmuymayempe8tk4jv454r", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ result })
-      });
-      console.log("✅ Дані відправлено у Make Webhook");
-    } catch (makeErr) {
-      console.error("❌ Помилка при відправці у Make Webhook:", makeErr);
-    }
+    await forwardToMake();
 
     if (!response.ok) {
       return {
