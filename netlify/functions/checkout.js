@@ -1,6 +1,6 @@
 export async function handler(event, context) {
-  const monoApiKey = process.env.MONO_API_KEY;
-  // const monoApiKey = process.env.MONO_API_KEY_TOV;
+  //const monoApiKey = process.env.MONO_API_KEY;
+  const monoApiKey = process.env.MONO_API_KEY_TOV;
 
   if (event.httpMethod === "OPTIONS") {
     // Handle preflight request
@@ -33,6 +33,7 @@ export async function handler(event, context) {
     const safeCart = cart.map(item => ({
       name: item.name,
       price: item.price,
+      code_product: item.codeProduct,
       cnt: Math.max(1, parseInt(item.cnt) || 1)
     }));
 
